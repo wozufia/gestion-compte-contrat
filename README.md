@@ -1,2 +1,2 @@
 # gestion-compte-contrat
-permet de gérer les comptes
+Dépôt de contrat de l'API Gestion Comptes
