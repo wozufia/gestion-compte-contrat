@@ -5,6 +5,7 @@ info:
   description: API REST pour la gestion des comptes utilisateurs, rôles et authentification.
 servers:
   - url: /api/accounts/v1
+
 paths:
   /auth/register:
     post:
@@ -14,6 +15,10 @@ paths:
       responses:
         '201':
           description: Compte créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '400':
           description: Données invalides
           content:
@@ -26,6 +31,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
   /auth/login:
     post:
       tags:
@@ -34,6 +40,10 @@ paths:
       responses:
         '200':
           description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
         '401':
           description: Identifiants invalides
           content:
@@ -46,6 +56,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
   /users:
     get:
       tags:
@@ -54,12 +65,96 @@ paths:
       responses:
         '200':
           description: Liste des utilisateurs récupérée
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '500':
           description: Erreur interne du serveur
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - users_v1
+      summary: Créer un utilisateur
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{id}:
+    get:
+      tags:
+        - users_v1
+      summary: Récupérer les informations d'un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Informations de l'utilisateur récupérées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - users_v1
+      summary: Mettre à jour un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /roles:
     get:
       tags:
@@ -68,14 +163,92 @@ paths:
       responses:
         '200':
           description: Liste des rôles récupérée
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
         '500':
           description: Erreur interne du serveur
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - roles_v1
+      summary: Créer un nouveau rôle
+      responses:
+        '201':
+          description: Rôle créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        firstName:
+          type: string
+          example: "Jean"
+        lastName:
+          type: string
+          example: "Dupont"
+        active:
+          type: boolean
+          example: true
+        roles:
+          type: array
+          items:
+            type: string
+            example: "USER"
+
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "ADMIN"
+        description:
+          type: string
+          example: "Accès complet à l'application"
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        refreshToken:
+          type: string
+          example: "dGhpc2lzdGhlcmVmcmVzaHRva2Vu"
+        tokenType:
+          type: string
+          example: "Bearer"
+        expiresIn:
+          type: integer
+          example: 3600
+
     Error:
       type: object
       properties:
@@ -110,6 +283,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ErrorItem'
+
     ErrorItem:
       type: object
       properties:
