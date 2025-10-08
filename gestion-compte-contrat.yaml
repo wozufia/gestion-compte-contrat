@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Account Management API
+  description: API REST pour la gestion des comptes utilisateurs, rôles et authentification.
+servers:
+  - url: /api/accounts/v1
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth_v1
+      summary: Créer un nouveau compte utilisateur
+      responses:
+        '201':
+          description: Compte créé avec succès
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/login:
+    post:
+      tags:
+        - auth_v1
+      summary: Connexion d'un utilisateur
+      responses:
+        '200':
+          description: Connexion réussie
+        '401':
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      tags:
+        - users_v1
+      summary: Lister tous les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs récupérée
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /roles:
+    get:
+      tags:
+        - roles_v1
+      summary: Lister tous les rôles disponibles
+      responses:
+        '200':
+          description: Liste des rôles récupérée
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        httpStatus:
+          type: integer
+          example: 500
+          description: Code HTTP de l'erreur # Ajouté pour faciliter le diagnostic
+        message:
+          type: string
+          example: "Une erreur inattendue s'est produite."
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-08T12:34:56Z"
+          description: Date et heure de l'erreur # Ajouté pour traçabilité temporelle
+        path:
+          type: string
+          example: "/api/users/42"
+          description: Endpoint appelé lors de l'erreur # Ajouté pour savoir quelle route a échoué
+        traceId:
+          type: string
+          example: "b7e6a4cd9a8b"
+          description: Identifiant unique pour suivre la requête # Ajouté pour corrélation dans les logs
+        errorCode:
+          type: string
+          example: "USR_001"
+          description: Code d'erreur spécifique à l'application # Ajouté pour distinguer les cas d'erreurs applicatives
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+    ErrorItem:
+      type: object
+      properties:
+        exception:
+          type: string
+        systemId:
+          type: string
+        code:
+          type: string
+        systemName:
+          type: string
+        meta:
+          type: object
+          properties: {}
+        detail:
+          type: string
+        time:
+          type: string
+        message:
+          type: string
