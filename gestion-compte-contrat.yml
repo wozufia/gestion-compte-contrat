@@ -3,8 +3,14 @@ info:
   version: 1.0.0
   title: Account Management API
   description: API REST pour la gestion des comptes utilisateurs, rôles et authentification.
+  license:
+    name: Proprietary
+    url: https://redocly.com/docs/cli/rules/oas/info-license-strict
 servers:
   - url: /api/accounts/v1
+
+security:
+  - bearerAuth: []
 
 paths:
   /auth/register:
@@ -89,6 +95,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur
           content:
@@ -96,8 +108,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /users/{email}:
+  /user/{email}:
     get:
+      operationId:
+        rechercherUtilisateur
       tags:
         - users_v1
       summary: Rechercher un utilisateur par email
@@ -122,6 +136,8 @@ paths:
                 $ref: '#/components/schemas/Erreur'
 
     put:
+      operationId:
+        modifierUtilisateur
       tags:
         - users_v1
       summary: Mettre à jour un utilisateur
@@ -153,6 +169,8 @@ paths:
 
   /roles:
     get:
+      operationId:
+        listerRoles
       tags:
         - roles_v1
       summary: Lister tous les rôles disponibles
@@ -165,6 +183,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Role'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur
           content:
@@ -172,6 +196,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
     post:
+      operationId:
+        creerRole
       tags:
         - roles_v1
       summary: Créer un nouveau rôle
@@ -190,6 +216,11 @@ paths:
                 $ref: '#/components/schemas/Erreur'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
 
     Utilisateur:
