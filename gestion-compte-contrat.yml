@@ -9,33 +9,49 @@ servers:
 paths:
   /auth/register:
     post:
+      operationId:
+        creerUtilisateur
       tags:
         - auth_v1
-      summary: Créer un nouveau compte utilisateur
+      summary: Créer un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreationUtilisateur'
       responses:
         '201':
-          description: Compte créé avec succès
+          description: Utilisateur créé avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Utilisateur'
         '400':
           description: Données invalides
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
 
   /auth/login:
     post:
+      operationId:
+        connecterUtilisateur
       tags:
         - auth_v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionUtilisateur'
       summary: Connexion d'un utilisateur
       responses:
         '200':
@@ -43,25 +59,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/AuthReponse'
         '401':
           description: Identifiants invalides
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
 
   /users:
     get:
+      operationId:
+        listerUtilisateurs
       tags:
         - users_v1
-      summary: Lister tous les utilisateurs
+      summary: Lister tous les utilisateurs. Cette opération est réservée aux administrateurs.
       responses:
         '200':
           description: Liste des utilisateurs récupérée
@@ -70,90 +88,68 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: '#/components/schemas/Utilisateur'
         '500':
           description: Erreur interne du serveur
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      tags:
-        - users_v1
-      summary: Créer un utilisateur
-      responses:
-        '201':
-          description: Utilisateur créé avec succès
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Données invalides
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Erreur interne du serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
 
-  /users/{id}:
+  /users/{email}:
     get:
       tags:
         - users_v1
-      summary: Récupérer les informations d'un utilisateur
+      summary: Rechercher un utilisateur par email
       parameters:
-        - name: id
+        - name: email
           in: path
           required: true
           schema:
-            type: integer
+            $ref: '#/components/schemas/Email'
       responses:
         '200':
           description: Informations de l'utilisateur récupérées
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Utilisateur'
         '404':
           description: Utilisateur non trouvé
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
+
     put:
       tags:
         - users_v1
       summary: Mettre à jour un utilisateur
       parameters:
-        - name: id
+        - name: email
           in: path
           required: true
           schema:
-            type: integer
+            $ref: '#/components/schemas/Email'
       responses:
         '200':
           description: Utilisateur mis à jour
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Utilisateur'
         '400':
           description: Données invalides
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
         '404':
           description: Utilisateur non trouvé
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
 
   /roles:
     get:
@@ -174,7 +170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
     post:
       tags:
         - roles_v1
@@ -191,20 +187,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/Erreur'
 
 components:
   schemas:
-    User:
+
+    Utilisateur:
       type: object
       properties:
         id:
           type: integer
           example: 1
         email:
-          type: string
-          format: email
-          example: "user@example.com"
+          $ref: '#/components/schemas/Email'
         firstName:
           type: string
           example: "Jean"
@@ -217,9 +212,30 @@ components:
         roles:
           type: array
           items:
-            type: string
-            example: "USER"
+            $ref: '#/components/schemas/Role'
 
+    CreationUtilisateur:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "Str0ng@Pass!"
+        firstName:
+          type: string
+          example: "Jean"
+        lastName:
+          type: string
+          example: "Dupont"
+    
     Role:
       type: object
       properties:
@@ -233,7 +249,21 @@ components:
           type: string
           example: "Accès complet à l'application"
 
-    AuthResponse:
+    Email:
+      type: string
+      format: email
+      example: "user@example.com"
+
+    ConnectionUtilisateur:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        username:
+          type: string
+          format: password
+
+    AuthReponse:
       type: object
       properties:
         accessToken:
@@ -249,7 +279,7 @@ components:
           type: integer
           example: 3600
 
-    Error:
+    Erreur:
       type: object
       properties:
         status:
@@ -282,9 +312,9 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorItem'
+            $ref: '#/components/schemas/ObjetErreur'
 
-    ErrorItem:
+    ObjetErreur:
       type: object
       properties:
         exception:
