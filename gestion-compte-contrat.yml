@@ -27,19 +27,19 @@ paths:
               $ref: '#/components/schemas/CreationUtilisateurRequete'
       responses:
         '201':
-          description: Utilisateur créé avec succès
+          description: Utilisateur créé avec succès.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Utilisateur'
         '400':
-          description: Données invalides
+          description: Données invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '500':
-          description: Erreur interne du serveur
+          description: Erreur interne du serveur.
           content:
             application/json:
               schema:
@@ -60,7 +60,7 @@ paths:
             $ref: '#/components/schemas/Email'
       responses:
         '200':
-          description: Liste des utilisateurs récupérée
+          description: Liste des utilisateurs récupérée.
           content:
             application/json:
               schema:
@@ -68,29 +68,30 @@ paths:
                 items:
                   $ref: '#/components/schemas/Utilisateur'
         '401':
-          description: Identifiants invalides
+          description: Identifiants invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '403':
-          description: Accès refusé
+          description: Accès refusé.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '400':
-          description: Données invalides
+          description: Données invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '500':
-          description: Erreur interne du serveur
+          description: Erreur interne du serveur.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
+                            
   /users/{id}:
     patch:
       operationId: modifierUtilisateur
@@ -112,37 +113,86 @@ paths:
               $ref: '#/components/schemas/ModifierUtilisateurRequete'
       responses:
         '200':
-          description: Utilisateur mis à jour
+          description: Utilisateur mis à jour.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Utilisateur'
         '400':
-          description: Données invalides
+          description: Données invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '401':
-          description: Identifiants invalides
+          description: Identifiants invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '403':
-          description: Accès refusé
+          description: Accès refusé.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '404':
-          description: Utilisateur non trouvé
+          description: Utilisateur non trouvé.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '500':
-          description: Erreur interne du serveur
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+    get:
+      operationId: rechercherUtilisateur
+      tags:
+        - users_v1
+      summary: Rechercher un utilisateur par ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Utilisateur trouvé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '401':
+          description: Identifiants invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '404':
+          description: Utilisateur non trouvé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
           content:
             application/json:
               schema:
@@ -162,20 +212,20 @@ paths:
               $ref: '#/components/schemas/ConnectionRequete'
       summary: Connexion d'un utilisateur
       responses:
-        '200':
-          description: Connexion réussie
+        '201':
+          description: Connexion réussie.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthReponse'
         '401':
-          description: Identifiants invalides
+          description: Identifiants invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '500':
-          description: Erreur interne du serveur
+          description: Erreur interne du serveur.
           content:
             application/json:
               schema:
@@ -189,7 +239,7 @@ paths:
       summary: Lister tous les rôles disponibles
       responses:
         '200':
-          description: Liste des rôles récupérée
+          description: Liste des rôles récupérée.
           content:
             application/json:
               schema:
@@ -197,25 +247,25 @@ paths:
                 items:
                   $ref: '#/components/schemas/Role'
         '400':
-          description: Données invalides
+          description: Données invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '401':
-          description: Identifiants invalides
+          description: Identifiants invalides.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '403':
-          description: Accès refusé
+          description: Accès refusé.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
         '500':
-          description: Erreur interne du serveur
+          description: Erreur interne du serveur.
           content:
             application/json:
               schema:
@@ -233,13 +283,13 @@ paths:
               $ref: '#/components/schemas/CreationRoleRequete'
       responses:
         '201':
-          description: Rôle créé avec succès
+          description: Rôle créé avec succès.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Role'
         '400':
-          description: Données invalides
+          description: Données invalides.
           content:
             application/json:
               schema:
