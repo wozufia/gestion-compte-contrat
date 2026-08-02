@@ -5,7 +5,6 @@ info:
   description: API REST pour la gestion des comptes utilisateurs, rôles et authentification.
   license:
     name: Proprietary
-    url: https://redocly.com/docs/cli/rules/oas/info-license-strict
 servers:
   - url: /api/accounts/v1
 
@@ -15,8 +14,8 @@ security:
 paths:
   /auth/register:
     post:
-      operationId:
-        creerUtilisateur
+      security: []
+      operationId: creerUtilisateur
       tags:
         - auth_v1
       summary: Créer un nouvel utilisateur
@@ -25,7 +24,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreationUtilisateur'
+              $ref: '#/components/schemas/CreationUtilisateurRequete'
       responses:
         '201':
           description: Utilisateur créé avec succès
@@ -46,10 +45,113 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
+  /users:
+    get:
+      operationId: listerUtilisateurs
+      tags:
+        - users_v1
+      summary: Lister tous les utilisateurs. Cette opération est réservée aux administrateurs.
+      parameters:
+        - name: email
+          in: query
+          required: false
+          description: Filtre la liste des utilisateurs par email.
+          schema:
+            $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          description: Liste des utilisateurs récupérée
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utilisateur'
+        '401':
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+  /users/{id}:
+    patch:
+      operationId: modifierUtilisateur
+      tags:
+        - users_v1
+      summary: Mettre à jour un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModifierUtilisateurRequete'
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '401':
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+
   /auth/login:
     post:
-      operationId:
-        connecterUtilisateur
+      security: []
+      operationId: connecterUtilisateur
       tags:
         - auth_v1
       requestBody:
@@ -57,7 +159,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConnectionUtilisateur'
+              $ref: '#/components/schemas/ConnectionRequete'
       summary: Connexion d'un utilisateur
       responses:
         '200':
@@ -79,98 +181,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /users:
-    get:
-      operationId:
-        listerUtilisateurs
-      tags:
-        - users_v1
-      summary: Lister tous les utilisateurs. Cette opération est réservée aux administrateurs.
-      responses:
-        '200':
-          description: Liste des utilisateurs récupérée
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Utilisateur'
-        '400':
-          description: Données invalides
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-        '500':
-          description: Erreur interne du serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-
-  /user/{email}:
-    get:
-      operationId:
-        rechercherUtilisateur
-      tags:
-        - users_v1
-      summary: Rechercher un utilisateur par email
-      parameters:
-        - name: email
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/Email'
-      responses:
-        '200':
-          description: Informations de l'utilisateur récupérées
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Utilisateur'
-        '404':
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-
-    put:
-      operationId:
-        modifierUtilisateur
-      tags:
-        - users_v1
-      summary: Mettre à jour un utilisateur
-      parameters:
-        - name: email
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/Email'
-      responses:
-        '200':
-          description: Utilisateur mis à jour
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Utilisateur'
-        '400':
-          description: Données invalides
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-        '404':
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-
   /roles:
     get:
-      operationId:
-        listerRoles
+      operationId: listerRoles
       tags:
         - roles_v1
       summary: Lister tous les rôles disponibles
@@ -189,6 +202,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
+        '401':
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur
           content:
@@ -196,11 +221,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
     post:
-      operationId:
-        creerRole
+      operationId: creerRole
       tags:
         - roles_v1
       summary: Créer un nouveau rôle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreationRoleRequete'
       responses:
         '201':
           description: Rôle créé avec succès
@@ -245,28 +275,39 @@ components:
           items:
             $ref: '#/components/schemas/Role'
 
-    CreationUtilisateur:
+    CreationUtilisateurRequete:
       type: object
       required:
         - email
-        - password
         - firstName
         - lastName
+        - motDePasse
       properties:
         email:
           $ref: '#/components/schemas/Email'
-        password:
-          type: string
-          format: password
-          minLength: 8
-          example: "Str0ng@Pass!"
         firstName:
           type: string
           example: "Jean"
         lastName:
           type: string
           example: "Dupont"
-    
+        motDePasse:
+          $ref: '#/components/schemas/MotDePasse'
+
+    ModifierUtilisateurRequete:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        firstName:
+          type: string
+          example: "Jean"
+        lastName:
+          type: string
+          example: "Dupont"
+        motDePasse:
+          $ref: '#/components/schemas/MotDePasse'
+
     Role:
       type: object
       properties:
@@ -280,19 +321,39 @@ components:
           type: string
           example: "Accès complet à l'application"
 
+    CreationRoleRequete:
+      type: object
+      required:
+          - name
+      properties:
+        name:
+          type: string
+          example: "ADMIN"
+        description:
+          type: string
+          example: "Accès complet à l'application"
+
     Email:
       type: string
       format: email
       example: "user@example.com"
 
-    ConnectionUtilisateur:
+    MotDePasse:
+      type: string
+      format: password
+      minLength: 8
+      example: "Str0ng@Pass!"
+
+    ConnectionRequete:
       type: object
+      required:
+          - email
+          - motDePasse
       properties:
         email:
           $ref: '#/components/schemas/Email'
-        username:
-          type: string
-          format: password
+        motDePasse:
+          $ref: '#/components/schemas/MotDePasse'
 
     AuthReponse:
       type: object
@@ -319,7 +380,7 @@ components:
         httpStatus:
           type: integer
           example: 500
-          description: Code HTTP de l'erreur # Ajouté pour faciliter le diagnostic
+          description: Code HTTP de l'erreur
         message:
           type: string
           example: "Une erreur inattendue s'est produite."
@@ -327,19 +388,19 @@ components:
           type: string
           format: date-time
           example: "2025-10-08T12:34:56Z"
-          description: Date et heure de l'erreur # Ajouté pour traçabilité temporelle
+          description: Date et heure de l'erreur
         path:
           type: string
-          example: "/api/users/42"
-          description: Endpoint appelé lors de l'erreur # Ajouté pour savoir quelle route a échoué
+          example: "/api/accounts/v1/"
+          description: Endpoint appelé lors de l'erreur
         traceId:
           type: string
           example: "b7e6a4cd9a8b"
-          description: Identifiant unique pour suivre la requête # Ajouté pour corrélation dans les logs
+          description: Identifiant unique pour suivre la requête
         errorCode:
           type: string
           example: "USR_001"
-          description: Code d'erreur spécifique à l'application # Ajouté pour distinguer les cas d'erreurs applicatives
+          description: Code d'erreur spécifique à l'application
         errors:
           type: array
           items:
