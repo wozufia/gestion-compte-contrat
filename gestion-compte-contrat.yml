@@ -1,12 +1,12 @@
 openapi: 3.0.3
 info:
   version: 1.0.0
-  title: Account Management API
-  description: API REST pour la gestion des comptes utilisateurs, rôles et authentification.
+  title: API de gestion de compte
+  description: API REST pour la gestion des comptes, utilisateurs, rôles et authentification.
   license:
     name: Proprietary
 servers:
-  - url: /api/accounts/v1
+  - url: /api/comptes/v1
 
 security:
   - bearerAuth: []
@@ -45,28 +45,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /users:
+  /compte/{id}:
     get:
-      operationId: listerUtilisateurs
+      operationId: rechercherCompte
       tags:
         - users_v1
-      summary: Lister tous les utilisateurs. Cette opération est réservée aux administrateurs.
+      summary: Rechercher un compte par ID
       parameters:
-        - name: email
-          in: query
-          required: false
-          description: Filtre la liste des utilisateurs par email.
+        - name: id
+          in: path
+          required: true
           schema:
-            $ref: '#/components/schemas/Email'
+            type: integer
+            example: 1
       responses:
         '200':
-          description: Liste des utilisateurs récupérée.
+          description: Compte trouvé.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Utilisateur'
+                  $ref: '#/components/schemas/Compte'
         '401':
           description: Identifiants invalides.
           content:
@@ -325,6 +325,20 @@ components:
           items:
             $ref: '#/components/schemas/Role'
 
+    Compte:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "ACTIF"
+        administrateur:
+          $ref: '#/components/schemas/Utilisateur'
+        contact:
+          $ref: '#/components/schemas/Contact'
+
     CreationUtilisateurRequete:
       type: object
       required:
@@ -382,6 +396,43 @@ components:
         description:
           type: string
           example: "Accès complet à l'application"
+
+    Contact:
+      type: object
+      properties:
+        telephone:
+          $ref: '#/components/schemas/Telephone'
+        email:
+          $ref: '#/components/schemas/Email'
+        adresse:
+          $ref: '#/components/schemas/Adresse'
+
+    Telephone:
+      type: object
+      properties:
+        indicatif:
+          type: string
+          example: "+52"
+          description: "Indicatif du pays (ex: +52 pour le Mexique)."
+        numero:
+          type: string
+          example: "1234567890"
+          description: "Numero de telephone."
+    Adresse:
+      type: object
+      properties:
+        rue:
+          type: string
+          example: "123 Rue Principale"
+        ville:
+          type: string
+          example: "Paris"
+        codePostal:
+          type: string
+          example: "75001"
+        pays:
+          type: string
+          example: "France"
 
     Email:
       type: string
