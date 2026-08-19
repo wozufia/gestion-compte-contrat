@@ -320,6 +320,11 @@ components:
         active:
           type: boolean
           example: true
+        compte:
+          $ref: '#/components/schemas/Compte'
+        administrateur:
+          type: boolean
+          example: false
         roles:
           type: array
           items:
@@ -334,8 +339,6 @@ components:
         status:
           type: string
           example: "ACTIF"
-        administrateur:
-          $ref: '#/components/schemas/Utilisateur'
         contact:
           $ref: '#/components/schemas/Contact'
 
