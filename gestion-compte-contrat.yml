@@ -14,7 +14,6 @@ security:
 paths:
   /auth/register:
     post:
-      security: []
       operationId: creerUtilisateur
       tags:
         - auth_v1
@@ -45,11 +44,77 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /compte/{id}:
+  /auth/login:
+    post:
+      security: [ ]
+      operationId: connecterUtilisateur
+      tags:
+        - auth_v1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionRequete'
+      summary: Connexion d'un utilisateur
+      responses:
+        '201':
+          description: Connexion réussie.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthReponse'
+        '401':
+          description: Identifiants invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+
+  /comptes:
+    post:
+      security: []
+      operationId: creerCompte
+      tags:
+        - accounts_v1
+      summary: Créer un compte
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreationCompteRequete'
+      responses:
+        '201':
+          description: Compte créé avec succès.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compte'
+        '400':
+          description: Données invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+
+  /comptes/{id}:
     get:
       operationId: rechercherCompte
       tags:
-        - users_v1
+        - accounts_v1
       summary: Rechercher un compte par ID
       parameters:
         - name: id
@@ -91,7 +156,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
-                            
+
   /users/{id}:
     patch:
       operationId: modifierUtilisateur
@@ -187,39 +252,6 @@ paths:
                 $ref: '#/components/schemas/Erreur'
         '404':
           description: Utilisateur non trouvé.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-        '500':
-          description: Erreur interne du serveur.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Erreur'
-
-  /auth/login:
-    post:
-      security: []
-      operationId: connecterUtilisateur
-      tags:
-        - auth_v1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConnectionRequete'
-      summary: Connexion d'un utilisateur
-      responses:
-        '201':
-          description: Connexion réussie.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthReponse'
-        '401':
-          description: Identifiants invalides.
           content:
             application/json:
               schema:
@@ -336,9 +368,27 @@ components:
         id:
           type: integer
           example: 1
+        nom:
+          type: string
+          example: "Nom du compte"
+        application:
+          type: string
+          example: "application pour lequel le compte a été créé"
         status:
           type: string
           example: "ACTIF"
+        contact:
+          $ref: '#/components/schemas/Contact'
+
+    CreationCompteRequete:
+      type: object
+      required:
+        - nom
+        - contact
+      properties:
+        nom:
+          type: string
+          example: "Nom du compte"
         contact:
           $ref: '#/components/schemas/Contact'
 
