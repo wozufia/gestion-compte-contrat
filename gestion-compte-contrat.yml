@@ -12,7 +12,7 @@ security:
   - bearerAuth: []
 
 paths:
-  /auth/users/register:
+  /auth/register/usager:
     post:
       security: [ ]
       operationId: creerUtilisateur
@@ -45,7 +45,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /auth/comptes/register:
+  /auth/register/compte:
     post:
       security: [ ]
       operationId: creerCompte
@@ -115,7 +115,7 @@ paths:
     patch:
       operationId: modifierCompte
       tags:
-        - accounts_v1
+        - comptes_v1
       summary: Mettre à jour un compte
       parameters:
         - name: id
@@ -170,7 +170,7 @@ paths:
     get:
       operationId: rechercherCompte
       tags:
-        - accounts_v1
+        - comptes_v1
       summary: Rechercher un compte par ID
       parameters:
         - name: id
@@ -215,7 +215,7 @@ paths:
     delete:
       operationId: supprimerCompte
       tags:
-        - accounts_v1
+        - comptes_v1
       summary: Supprimer un compte
       parameters:
         - name: id
@@ -256,11 +256,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /users/{id}:
+  /usagers/{id}:
     patch:
       operationId: modifierUtilisateur
       tags:
-        - users_v1
+        - usagers_v1
       summary: Mettre à jour un utilisateur
       parameters:
         - name: id
@@ -315,7 +315,7 @@ paths:
     get:
       operationId: rechercherUtilisateur
       tags:
-        - users_v1
+        - usagers_v1
       summary: Rechercher un utilisateur par ID
       parameters:
         - name: id
@@ -364,7 +364,7 @@ paths:
     delete:
       operationId: supprimerUtilisateur
       tags:
-        - users_v1
+        - usagers_v1
       summary: Supprimer un utilisateur par ID
       parameters:
         - name: id
