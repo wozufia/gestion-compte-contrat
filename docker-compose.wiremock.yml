@@ -1,0 +1,9 @@
+services:
+  wiremock:
+    image: wiremock/wiremock:3.9.1
+    container_name: gestion-compte-wiremock
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./stubs:/home/wiremock/mappings
+    command: [ "--verbose" ]

@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/comptes/v1/auth/login",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.email)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.motDePasse)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "accessToken": "stub-access-token",
+      "tokenType": "Bearer",
+      "expiresIn": 3600
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/comptes/v1/auth/register/usager",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.email)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.firstName)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.lastName)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.motDePasse)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": 10,
+      "email": "user@example.com",
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "active": true
+    }
+  }
+}

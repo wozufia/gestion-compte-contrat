@@ -1,0 +1,39 @@
+{
+  "request": {
+    "method": "PATCH",
+    "urlPathPattern": "/api/comptes/v1/comptes/[0-9]+",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      },
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": 1,
+      "nom": "Compte Mis à Jour",
+      "application": "gestion-compte",
+      "status": "ACTIF",
+      "contact": {
+        "telephone": {
+          "indicatif": "+52",
+          "numero": "1234567890"
+        },
+        "email": "owner@example.com",
+        "adresse": {
+          "rue": "123 Rue Principale",
+          "ville": "Paris",
+          "codePostal": "75001",
+          "pays": "France"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/comptes/v1/usagers/[0-9]+",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": 10,
+      "email": "user@example.com",
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "active": true,
+      "administrateur": false,
+      "compte": {
+        "id": 1,
+        "nom": "Compte Démo",
+        "application": "gestion-compte",
+        "status": "ACTIF",
+        "contact": {
+          "email": "owner@example.com"
+        }
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "ADMIN",
+          "description": "Accès complet à l'application"
+        }
+      ]
+    }
+  }
+}
