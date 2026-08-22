@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/comptes/v1/roles",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      },
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.name)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": 3,
+      "name": "SUPPORT",
+      "description": "Support level access"
+    }
+  }
+}
