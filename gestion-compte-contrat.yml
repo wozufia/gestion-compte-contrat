@@ -12,12 +12,13 @@ security:
   - bearerAuth: []
 
 paths:
-  /auth/register:
+  /auth/register/usager:
     post:
+      security: [ ]
       operationId: creerUtilisateur
       tags:
         - auth_v1
-      summary: Créer un nouvel utilisateur
+      summary: Créer un utilisateur
       requestBody:
         required: true
         content:
@@ -31,6 +32,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+
+  /auth/register/compte:
+    post:
+      security: [ ]
+      operationId: creerCompte
+      tags:
+        - auth_v1
+      summary: Créer un compte
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreationCompteRequete'
+      responses:
+        '201':
+          description: Compte créé avec succès.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compte'
         '400':
           description: Données invalides.
           content:
@@ -77,22 +111,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Erreur'
 
-  /comptes:
-    post:
-      security: []
-      operationId: creerCompte
+  /comptes/{id}:
+    patch:
+      operationId: modifierCompte
       tags:
-        - accounts_v1
-      summary: Créer un compte
+        - comptes_v1
+      summary: Mettre à jour un compte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreationCompteRequete'
+              $ref: '#/components/schemas/ModifierCompteRequete'
       responses:
-        '201':
-          description: Compte créé avec succès.
+        '200':
+          description: Compte mis à jour.
           content:
             application/json:
               schema:
@@ -103,18 +143,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
+        '401':
+          description: Identifiants invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '404':
+          description: Utilisateur non trouvé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
         '500':
           description: Erreur interne du serveur.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
-
-  /comptes/{id}:
     get:
       operationId: rechercherCompte
       tags:
-        - accounts_v1
+        - comptes_v1
       summary: Rechercher un compte par ID
       parameters:
         - name: id
@@ -156,12 +212,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
+    delete:
+      operationId: supprimerCompte
+      tags:
+        - comptes_v1
+      summary: Supprimer un compte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Compte supprimé.
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Identifiants invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '400':
+          description: Données invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
 
-  /users/{id}:
+  /usagers/{id}:
     patch:
       operationId: modifierUtilisateur
       tags:
-        - users_v1
+        - usagers_v1
       summary: Mettre à jour un utilisateur
       parameters:
         - name: id
@@ -216,7 +315,7 @@ paths:
     get:
       operationId: rechercherUtilisateur
       tags:
-        - users_v1
+        - usagers_v1
       summary: Rechercher un utilisateur par ID
       parameters:
         - name: id
@@ -232,6 +331,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '401':
+          description: Identifiants invalides.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '403':
+          description: Accès refusé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '404':
+          description: Utilisateur non trouvé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
+    delete:
+      operationId: supprimerUtilisateur
+      tags:
+        - usagers_v1
+      summary: Supprimer un utilisateur par ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Utilisateur supprimé.
+          content:
+            application/json:
+              schema:
+                type: string
         '400':
           description: Données invalides.
           content:
@@ -334,7 +482,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-
     Utilisateur:
       type: object
       properties:
@@ -361,7 +508,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
-
     Compte:
       type: object
       properties:
@@ -379,7 +525,6 @@ components:
           example: "ACTIF"
         contact:
           $ref: '#/components/schemas/Contact'
-
     CreationCompteRequete:
       type: object
       required:
@@ -391,7 +536,6 @@ components:
           example: "Nom du compte"
         contact:
           $ref: '#/components/schemas/Contact'
-
     CreationUtilisateurRequete:
       type: object
       required:
@@ -410,7 +554,14 @@ components:
           example: "Dupont"
         motDePasse:
           $ref: '#/components/schemas/MotDePasse'
-
+    ModifierCompteRequete:
+      type: object
+      properties:
+        nom:
+          type: string
+          example: "Nom du compte"
+        contact:
+          $ref: '#/components/schemas/Contact'
     ModifierUtilisateurRequete:
       type: object
       properties:
@@ -473,6 +624,10 @@ components:
           description: "Numero de telephone."
     Adresse:
       type: object
+      required:
+        - rue
+        - ville
+        - codePostal
       properties:
         rue:
           type: string
@@ -483,9 +638,6 @@ components:
         codePostal:
           type: string
           example: "75001"
-        pays:
-          type: string
-          example: "France"
 
     Email:
       type: string
