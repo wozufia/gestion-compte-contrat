@@ -227,10 +227,6 @@ paths:
       responses:
         '204':
           description: Compte supprimé.
-          content:
-            application/json:
-              schema:
-                type: string
         '401':
           description: Identifiants invalides.
           content:
@@ -376,10 +372,6 @@ paths:
       responses:
         '204':
           description: Utilisateur supprimé.
-          content:
-            application/json:
-              schema:
-                type: string
         '400':
           description: Données invalides.
           content:
