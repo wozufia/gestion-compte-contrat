@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   version: 1.0.0
   title: API de gestion de compte
-  description: API REST pour la gestion des comptes, utilisateurs, rôles et authentification.
+  description: API REST pour la gestion des comptes, utilisateurs, rôles et les authentifications.
   license:
     name: Proprietary
 servers:
@@ -477,9 +477,6 @@ components:
     Utilisateur:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         email:
           $ref: '#/components/schemas/Email'
         firstName:
@@ -503,9 +500,6 @@ components:
     Compte:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         nom:
           type: string
           example: "Nom du compte"
@@ -571,9 +565,6 @@ components:
     Role:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         name:
           type: string
           example: "ADMIN"

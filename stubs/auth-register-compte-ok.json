@@ -22,7 +22,6 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "id": 1,
       "nom": "Compte Démo",
       "application": "gestion-compte",
       "status": "ACTIF",

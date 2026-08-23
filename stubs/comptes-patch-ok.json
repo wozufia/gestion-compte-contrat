@@ -17,7 +17,6 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "id": 1,
       "nom": "Compte Mis à Jour",
       "application": "gestion-compte",
       "status": "ACTIF",

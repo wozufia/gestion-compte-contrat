@@ -15,7 +15,6 @@
     },
     "jsonBody": [
       {
-        "id": 1,
         "name": "ADMIN",
         "description": "Accès complet à l'application"
       },
