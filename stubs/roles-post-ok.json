@@ -22,7 +22,6 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "id": 3,
       "name": "SUPPORT",
       "description": "Support level access"
     }
