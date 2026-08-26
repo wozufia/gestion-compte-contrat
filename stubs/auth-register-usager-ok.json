@@ -28,6 +28,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
+      "id": 1,
       "email": "user@example.com",
       "firstName": "Jean",
       "lastName": "Dupont",

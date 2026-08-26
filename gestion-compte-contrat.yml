@@ -477,6 +477,9 @@ components:
     Utilisateur:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1
         email:
           $ref: '#/components/schemas/Email'
         firstName:
@@ -490,9 +493,6 @@ components:
           example: true
         compte:
           $ref: '#/components/schemas/Compte'
-        administrateur:
-          type: boolean
-          example: false
         roles:
           type: array
           items:
@@ -500,6 +500,9 @@ components:
     Compte:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1
         nom:
           type: string
           example: "Nom du compte"
