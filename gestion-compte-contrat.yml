@@ -650,18 +650,12 @@ components:
     AuthReponse:
       type: object
       properties:
-        accessToken:
+        jwt:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-        refreshToken:
-          type: string
-          example: "dGhpc2lzdGhlcmVmcmVzaHRva2Vu"
         tokenType:
           type: string
           example: "Bearer"
-        expiresIn:
-          type: integer
-          example: 3600
 
     Erreur:
       type: object
