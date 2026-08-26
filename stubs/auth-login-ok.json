@@ -22,9 +22,8 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "accessToken": "stub-access-token",
-      "tokenType": "Bearer",
-      "expiresIn": 3600
+      "jwt": "stub-access-token",
+      "tokenType": "Bearer"
     }
   }
 }
