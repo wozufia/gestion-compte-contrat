@@ -18,7 +18,6 @@
       "firstName": "Jean",
       "lastName": "Dupont",
       "active": true,
-      "administrateur": false,
       "compte": {
         "id": 1,
         "nom": "Compte Démo",
@@ -30,7 +29,6 @@
       },
       "roles": [
         {
-          "id": 1,
           "name": "ADMIN",
           "description": "Accès complet à l'application"
         }

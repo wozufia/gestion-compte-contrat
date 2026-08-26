@@ -21,7 +21,6 @@
       "firstName": "Jean",
       "lastName": "Dupont",
       "active": true,
-      "administrateur": false,
       "roles": [
         {
           "id": 2,
