@@ -546,6 +546,9 @@ components:
         roles:
           type: string
           example: "ADMIN,USER,NOM_APPLICATION"
+        compte:
+          type: string
+          example: "Nom du compte"
 
     ModifierCompteRequete:
       type: object
