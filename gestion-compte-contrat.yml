@@ -543,6 +543,13 @@ components:
           example: "Dupont"
         motDePasse:
           $ref: '#/components/schemas/MotDePasse'
+        roles:
+          type: string
+          example: "ADMIN,USER,NOM_APPLICATION"
+        compte:
+          type: string
+          example: "Nom du compte"
+
     ModifierCompteRequete:
       type: object
       properties:

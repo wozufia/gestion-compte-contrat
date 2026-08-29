@@ -1,4 +1,5 @@
 {
+  "priority": 20,
   "request": {
     "method": "POST",
     "urlPath": "/api/comptes/v1/auth/login",
