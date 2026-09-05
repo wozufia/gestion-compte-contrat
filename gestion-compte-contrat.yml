@@ -575,7 +575,7 @@ components:
     Role:
       type: object
       properties:
-        name:
+        nom:
           type: string
           example: "ADMIN"
         description:
@@ -585,9 +585,9 @@ components:
     CreationRoleRequete:
       type: object
       required:
-          - name
+          - nom
       properties:
-        name:
+        nom:
           type: string
           example: "ADMIN"
         description:
