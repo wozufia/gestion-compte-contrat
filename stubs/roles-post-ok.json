@@ -12,7 +12,7 @@
     },
     "bodyPatterns": [
       {
-        "matchesJsonPath": "$[?(@.name)]"
+        "matchesJsonPath": "$[?(@.nom)]"
       }
     ]
   },
@@ -22,7 +22,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "name": "SUPPORT",
+      "nom": "SUPPORT",
       "description": "Support level access"
     }
   }
