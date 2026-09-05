@@ -574,6 +574,8 @@ components:
 
     Role:
       type: object
+      required:
+        - nom
       properties:
         nom:
           type: string
