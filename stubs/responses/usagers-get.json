@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "jsonBody": {
+    "email": "user@example.com",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "active": true,
+    "compte": {
+      "id": 1,
+      "nom": "Compte Démo",
+      "application": "gestion-compte",
+      "status": "ACTIF",
+      "contact": {
+        "email": "owner@example.com"
+      }
+    },
+    "roles": [
+      {
+        "name": "ADMIN",
+        "description": "Accès complet à l'application"
+      }
+    ]
+  }
+}
