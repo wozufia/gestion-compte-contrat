@@ -1,0 +1,20 @@
+{
+  "method": "POST",
+  "urlPath": "/api/comptes/v1/auth/login",
+  "headers": {
+    "Content-Type": {
+      "contains": "application/json"
+    }
+  },
+  "bodyPatterns": [
+    {
+      "matchesJsonPath": "$[?(@.application)]"
+    },
+    {
+      "matchesJsonPath": "$[?(@.email)]"
+    },
+    {
+      "matchesJsonPath": "$[?(@.motDePasse)]"
+    }
+  ]
+}

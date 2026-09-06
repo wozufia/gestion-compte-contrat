@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "jsonBody": {
+    "email": "updated.user@example.com",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "active": true,
+    "roles": [
+      {
+        "id": 2,
+        "name": "USER",
+        "description": "Accès standard"
+      }
+    ]
+  }
+}

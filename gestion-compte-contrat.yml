@@ -466,6 +466,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erreur'
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erreur'
 
 components:
   securitySchemes:
@@ -648,9 +654,13 @@ components:
     ConnectionRequete:
       type: object
       required:
+          - application
           - email
           - motDePasse
       properties:
+        application:
+          type: string
+          example: "Nom de l'application"
         email:
           $ref: '#/components/schemas/Email'
         motDePasse:

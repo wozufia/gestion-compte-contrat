@@ -1,0 +1,10 @@
+{
+  "status": 201,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "jsonBody": {
+    "jwt": "stub-access-token",
+    "tokenType": "Bearer"
+  }
+}

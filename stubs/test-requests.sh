@@ -2,8 +2,13 @@
 
 set -euo pipefail
 
-BASE_URL="${BASE_URL:-http://localhost:8081/api/comptes/v1}"
+CONTRACT_FILE="${CONTRACT_FILE:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/gestion-compte-contrat.yml}"
+SERVER_PATH="${SERVER_PATH:-$(ruby -e 'require "yaml"; puts YAML.load_file(ARGV[0]).dig("servers", 0, "url") || "/api/comptes/v1"' "${CONTRACT_FILE}")}"
+BASE_HOST="${BASE_HOST:-http://localhost:8081}"
 TOKEN="${TOKEN:-stub-access-token}"
+REQUESTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/requests"
+RESPONSES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/responses"
+
 TOTAL_TESTS=0
 PASSED_TESTS=0
 FAILED_TESTS=0
@@ -42,63 +47,105 @@ run_expect() {
   rm -f "${body_file}"
 }
 
+request_file() {
+  local method="$1"
+  local path="$2"
+  echo "${REQUESTS_DIR}/${method}-${path}.json"
+}
+
+response_file() {
+  local method="$1"
+  local path="$2"
+  echo "${RESPONSES_DIR}/${method}-${path}.json"
+}
+
+json_extract() {
+  jq -r --arg path "$2" '
+    def dig($p):
+      reduce ($p | split("."))[] as $k (.;
+        if type == "object" and has($k) then .[$k] else empty end
+      );
+    dig($path)
+  ' "$1"
+}
+
+json_has_key() {
+  jq -e --arg path "$2" '
+    def dig($p):
+      reduce ($p | split("."))[] as $k (.;
+        if type == "object" and has($k) then .[$k] else empty end
+      );
+    dig($path) != null
+  ' "$1" >/dev/null
+}
+
+build_body_from_request() {
+  local request_json="$1"
+  jq -c '
+    (.bodyPatterns // [])
+    | map(select(.matchesJsonPath? and (.matchesJsonPath | test("@\\."))))
+    | map(.matchesJsonPath | capture("@\\.(?<key>[^\\)]+)") | .key)
+    | reduce .[] as $key ({}; . + {($key): "value"})
+  ' "$request_json"
+}
+
+run_from_request_file() {
+  local request_json="$1"
+  local response_json="$2"
+  local request_name
+  request_name="$(basename "${request_json}" .json)"
+
+  local method path status content_type body auth_required
+  method="$(json_extract "${request_json}" method)"
+  if json_has_key "${request_json}" urlPath; then
+    path="$(json_extract "${request_json}" urlPath)"
+  else
+    path="$(json_extract "${request_json}" urlPathPattern)"
+  fi
+
+  status="$(json_extract "${response_json}" status)"
+
+  local actual_path="${path}"
+  actual_path="${actual_path//\\//}"
+  actual_path="${actual_path//\[0-9\]\+/1}"
+  actual_path="${actual_path//\[0-9\]/1}"
+
+  local curl_args=(-X "${method}" "${BASE_HOST}${actual_path}")
+
+  if json_has_key "${request_json}" headers.Content-Type.contains; then
+    content_type="$(json_extract "${request_json}" headers.Content-Type.contains)"
+    curl_args+=(-H "Content-Type: ${content_type}")
+  fi
+
+  if json_has_key "${request_json}" headers.Authorization.matches; then
+    curl_args+=(-H "Authorization: Bearer ${TOKEN}")
+  fi
+
+  if json_has_key "${request_json}" bodyPatterns; then
+    body="$(build_body_from_request "${request_json}")"
+    if [[ "${body}" != "{}" ]]; then
+      curl_args+=(-d "${body}")
+    fi
+  fi
+
+  run_expect "${request_name}" "${status}" curl "${curl_args[@]}"
+}
+
 echo "== Public endpoints =="
-run_expect "POST /auth/register/usager" "201" \
-  curl -X POST "${BASE_URL}/auth/register/usager" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","firstName":"Jean","lastName":"Dupont","motDePasse":"Str0ng@Pass!"}'
-
-run_expect "POST /auth/register/compte" "201" \
-  curl -X POST "${BASE_URL}/auth/register/compte" \
-  -H "Content-Type: application/json" \
-  -d '{"nom":"Compte Démo","contact":{"telephone":{"indicatif":"+52","numero":"1234567890"},"email":"owner@example.com","adresse":{"rue":"123 Rue Principale","ville":"Paris","codePostal":"75001","pays":"France"}}}'
-
-run_expect "POST /auth/login (ok)" "201" \
-  curl -X POST "${BASE_URL}/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","motDePasse":"Str0ng@Pass!"}'
-
-run_expect "POST /auth/login (fallback)" "401" \
-  curl -X POST "${BASE_URL}/auth/login"
+run_from_request_file "${REQUESTS_DIR}/auth-register-usager.json" "${RESPONSES_DIR}/auth-register-usager.json"
+run_from_request_file "${REQUESTS_DIR}/auth-register-compte.json" "${RESPONSES_DIR}/auth-register-compte.json"
+run_from_request_file "${REQUESTS_DIR}/auth-login.json" "${RESPONSES_DIR}/auth-login.json"
+run_from_request_file "${REQUESTS_DIR}/auth-login-unauthorized.json" "${RESPONSES_DIR}/auth-login-unauthorized.json"
 
 echo "== Protected endpoints =="
-run_expect "GET /comptes/1" "200" \
-  curl -X GET "${BASE_URL}/comptes/1" \
-  -H "Authorization: Bearer ${TOKEN}"
-
-run_expect "PATCH /comptes/1" "200" \
-  curl -X PATCH "${BASE_URL}/comptes/1" \
-  -H "Authorization: Bearer ${TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{"nom":"Compte Mis à Jour","contact":{"email":"owner@example.com"}}'
-
-run_expect "DELETE /comptes/1" "204" \
-  curl -X DELETE "${BASE_URL}/comptes/1" \
-  -H "Authorization: Bearer ${TOKEN}"
-
-run_expect "GET /usagers/1" "200" \
-  curl -X GET "${BASE_URL}/usagers/1" \
-  -H "Authorization: Bearer ${TOKEN}"
-
-run_expect "PATCH /usagers/1" "200" \
-  curl -X PATCH "${BASE_URL}/usagers/1" \
-  -H "Authorization: Bearer ${TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"updated.user@example.com","firstName":"Jean","lastName":"Dupont","motDePasse":"Str0ng@Pass!"}'
-
-run_expect "DELETE /usagers/1" "204" \
-  curl -X DELETE "${BASE_URL}/usagers/1" \
-  -H "Authorization: Bearer ${TOKEN}"
-
-run_expect "GET /roles" "200" \
-  curl -X GET "${BASE_URL}/roles" \
-  -H "Authorization: Bearer ${TOKEN}"
-
-run_expect "POST /roles" "201" \
-  curl -X POST "${BASE_URL}/roles" \
-  -H "Authorization: Bearer ${TOKEN}" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"SUPPORT","description":"Support level access"}'
+run_from_request_file "${REQUESTS_DIR}/comptes-get.json" "${RESPONSES_DIR}/comptes-get.json"
+run_from_request_file "${REQUESTS_DIR}/comptes-patch.json" "${RESPONSES_DIR}/comptes-patch.json"
+run_from_request_file "${REQUESTS_DIR}/comptes-delete.json" "${RESPONSES_DIR}/comptes-delete.json"
+run_from_request_file "${REQUESTS_DIR}/usagers-get.json" "${RESPONSES_DIR}/usagers-get.json"
+run_from_request_file "${REQUESTS_DIR}/usagers-patch.json" "${RESPONSES_DIR}/usagers-patch.json"
+run_from_request_file "${REQUESTS_DIR}/usagers-delete.json" "${RESPONSES_DIR}/usagers-delete.json"
+run_from_request_file "${REQUESTS_DIR}/roles-get.json" "${RESPONSES_DIR}/roles-get.json"
+run_from_request_file "${REQUESTS_DIR}/roles-post.json" "${RESPONSES_DIR}/roles-post.json"
 
 if [[ "${FAILED_TESTS}" -eq 0 ]]; then
   echo "✅ BILAN: ${PASSED_TESTS}/${TOTAL_TESTS} tests des stubs passés avec succès (0 échec)."

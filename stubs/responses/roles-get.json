@@ -1,0 +1,16 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "jsonBody": [
+    {
+      "nom": "ADMIN",
+      "description": "Accès complet à l'application"
+    },
+    {
+      "nom": "USER",
+      "description": "Accès standard"
+    }
+  ]
+}
