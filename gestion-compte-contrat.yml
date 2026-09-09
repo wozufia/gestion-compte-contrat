@@ -52,6 +52,7 @@ paths:
       tags:
         - auth_v1
       summary: Créer un compte
+      description: Nécessite un JWT valide dans le header Authorization au format Bearer.
       requestBody:
         required: true
         content:
@@ -524,11 +525,15 @@ components:
       type: object
       required:
         - nom
+        - application
         - contact
       properties:
         nom:
           type: string
           example: "Nom du compte"
+        application:
+            type: string
+            example: "application pour lequel le compte a été créé"
         contact:
           $ref: '#/components/schemas/Contact'
     CreationUtilisateurRequete:

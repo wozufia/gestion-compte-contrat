@@ -8,5 +8,13 @@
     "Content-Type": {
       "contains": "application/json"
     }
-  }
+  },
+  "bodyPatterns": [
+    {
+      "matchesJsonPath": "$.nom"
+    },
+    {
+      "matchesJsonPath": "$.contact"
+    }
+  ]
 }
