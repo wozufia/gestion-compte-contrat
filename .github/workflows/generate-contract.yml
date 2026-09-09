@@ -15,12 +15,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Upload contract artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
-          name: contract-${{ github.sha }}
+          name: gestion-contrat-v1-${{ github.sha }}
           path: |
             **/*
             !.git/**
