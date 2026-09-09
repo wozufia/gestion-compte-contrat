@@ -1,0 +1,46 @@
+name: Publish Contract Artifact
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-stubs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start WireMock
+        run: docker compose -f docker-compose.wiremock.yml up -d
+
+      - name: Run stub requests tests
+        run: bash stubs/test-requests.sh
+
+      - name: Stop WireMock
+        if: always()
+        run: docker compose -f docker-compose.wiremock.yml down
+
+  contract-artifact:
+    needs: test-stubs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload contract artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-${{ github.sha }}
+          path: |
+            **/*
+            !.git/**
+            !.github/**
+          if-no-files-found: error
+          retention-days: 30
