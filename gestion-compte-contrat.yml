@@ -633,6 +633,7 @@ components:
         - rue
         - ville
         - codePostal
+        - pays
       properties:
         rue:
           type: string
@@ -640,9 +641,19 @@ components:
         ville:
           type: string
           example: "Paris"
+        province:
+          type: string
+          example: "Ontario"
+        pays:
+          type: string
+          example: "Burkina"
         codePostal:
           type: string
           example: "75001"
+        description:
+          type: string
+          example: "01 rue nomRue, nomVille, nomProvince, A0A 0A0, Pays"
+
 
     Email:
       type: string
