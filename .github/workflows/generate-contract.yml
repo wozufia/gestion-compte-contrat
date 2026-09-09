@@ -20,7 +20,7 @@ jobs:
       - name: Upload contract artifact
         uses: actions/upload-artifact@v5.0.0
         with:
-          name: gestion-contrat-v1-${{ github.sha }}
+          name: gestion-contrat-v1-0-0
           path: |
             **/*
             !.git/**
