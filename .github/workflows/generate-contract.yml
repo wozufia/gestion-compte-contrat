@@ -10,20 +10,33 @@ permissions:
   contents: read
 
 jobs:
-  contract-artifact:
+  build-contract-jar:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Upload contract artifact
+      - name: Build contract JAR
+        run: |
+          mkdir -p build
+          cp gestion-compte-contrat.yml build/gestion-compte-contrat.yml
+          cat > build/MANIFEST.MF <<'EOF'
+          Manifest-Version: 1.0
+          Created-By: GitHub Actions
+          EOF
+          jar cfm gestion-contratv1.jar build/MANIFEST.MF -C build gestion-compte-contrat.yml
+
+      - name: Upload contract JAR
         uses: actions/upload-artifact@v5.0.0
         with:
-          name: gestion-contrat-v1-0-0
-          path: |
-            **/*
-            !.git/**
-            !.github/**
+          name: gestion-contratv1
+          path: gestion-contratv1.jar
           if-no-files-found: error
           retention-days: 90
+
+  contract-artifact:
+    needs: build-contract-jar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Contract artifact generated
+        run: echo "Contract JAR built and uploaded in build-contract-jar job."
