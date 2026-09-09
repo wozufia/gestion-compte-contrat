@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Upload contract artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: gestion-contrat-v1-${{ github.sha }}
           path: |
