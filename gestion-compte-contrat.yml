@@ -524,11 +524,15 @@ components:
       type: object
       required:
         - nom
+        - application
         - contact
       properties:
         nom:
           type: string
           example: "Nom du compte"
+        application:
+            type: string
+            example: "application pour lequel le compte a été créé"
         contact:
           $ref: '#/components/schemas/Contact'
     CreationUtilisateurRequete:

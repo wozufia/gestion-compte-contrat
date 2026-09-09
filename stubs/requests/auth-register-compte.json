@@ -11,6 +11,9 @@
       "matchesJsonPath": "$[?(@.nom)]"
     },
     {
+      "matchesJsonPath": "$[?(@.application)]"
+    },
+    {
       "matchesJsonPath": "$[?(@.contact)]"
     }
   ]
