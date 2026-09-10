@@ -1,9 +1,0 @@
-{
-  "method": "DELETE",
-  "urlPathPattern": "/api/comptes/v1/comptes/[0-9]+",
-  "headers": {
-    "Authorization": {
-      "matches": "^[Bb]earer\\s.+$"
-    }
-  }
-}

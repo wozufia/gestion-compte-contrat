@@ -1,9 +1,0 @@
-{
-  "method": "POST",
-  "urlPath": "/api/comptes/v1/auth/login",
-  "headers": {
-    "Content-Type": {
-      "absent": true
-    }
-  }
-}

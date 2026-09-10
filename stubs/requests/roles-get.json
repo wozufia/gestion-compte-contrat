@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "urlPath": "/api/comptes/v1/roles",
-  "headers": {
-    "Authorization": {
-      "matches": "^[Bb]earer\\s.+$"
-    }
-  }
-}

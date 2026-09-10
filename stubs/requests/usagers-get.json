@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "urlPathPattern": "/api/comptes/v1/usagers/[0-9]+",
-  "headers": {
-    "Authorization": {
-      "matches": "^[Bb]earer\\s.+$"
-    }
-  }
-}
