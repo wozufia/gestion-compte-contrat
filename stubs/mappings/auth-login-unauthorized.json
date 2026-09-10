@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/comptes/v1/auth/login",
+    "headers": {
+      "Content-Type": {
+        "absent": true
+      }
+    }
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "status": "error",
+      "httpStatus": 401,
+      "message": "Identifiants invalides."
+    }
+  }
+}

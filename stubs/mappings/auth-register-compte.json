@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/comptes/v1/auth/register/compte",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.nom)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.application)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.contact)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": 1,
+      "nom": "Compte D\u00e9mo",
+      "application": "gestion-compte",
+      "status": "ACTIF",
+      "contact": {
+        "email": "owner@example.com"
+      }
+    }
+  }
+}

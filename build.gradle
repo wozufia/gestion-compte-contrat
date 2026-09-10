@@ -1,0 +1,44 @@
+plugins {
+    id 'base'
+    id 'maven-publish'
+}
+
+group = 'com.awa.centrale'
+version = '1.0.0'
+
+def contractFile = layout.projectDirectory.file('gestion-compte-contrat.yml')
+def stubsDir = layout.projectDirectory.dir('stubs')
+
+tasks.register('checkContract', Exec) {
+    group = 'verification'
+    description = 'Validates the OpenAPI contract.'
+    commandLine 'redocly', 'lint', contractFile.asFile.absolutePath
+}
+
+tasks.register('testStubs', Exec) {
+    group = 'verification'
+    description = 'Runs WireMock stub tests.'
+    commandLine 'bash', stubsDir.file('test-requests.sh').asFile.absolutePath
+}
+
+tasks.register('jar', Jar) {
+    group = 'build'
+    description = 'Packages the contract as a JAR.'
+    archiveBaseName = 'gestion-contratv1'
+    archiveVersion = ''
+    destinationDirectory = layout.buildDirectory.dir('libs')
+    from(contractFile) {
+        into ''
+    }
+    manifest {
+        attributes 'Manifest-Version': '1.0'
+    }
+}
+
+tasks.named('assemble') {
+    dependsOn tasks.named('jar')
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('checkContract'), tasks.named('testStubs')
+}
