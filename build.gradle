@@ -26,6 +26,7 @@ tasks.register('jar', Jar) {
     description = 'Packages the contract as a JAR.'
     archiveBaseName = 'gestion-contratv1'
     archiveVersion = ''
+    destinationDirectory = layout.buildDirectory.dir('libs')
     from(contractFile) {
         into ''
     }
