@@ -17,14 +17,15 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Start WireMock
-        run: docker compose -f docker-compose.wiremock.yml up -d
+        run: docker compose -f docker-compose.wiremock.yml up -d --wait
 
       - name: Wait for WireMock
         run: |
           for i in {1..30}; do
-            curl -fsS http://localhost:8081/__admin/mappings && exit 0
+            curl -fsS http://localhost:8081/__admin/mappings >/dev/null && exit 0
             sleep 2
           done
+          docker compose -f docker-compose.wiremock.yml logs
           exit 1
 
       - name: Run stub tests
