@@ -1,0 +1,33 @@
+{
+  "request": {
+    "method": "PATCH",
+    "urlPathPattern": "/api/comptes/v1/usagers/[0-9]+",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      },
+      "Content-Type": {
+        "contains": "application/json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "email": "updated.user@example.com",
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "active": true,
+      "roles": [
+        {
+          "id": 2,
+          "name": "USER",
+          "description": "Acc\u00e8s standard"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/comptes/v1/roles",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "nom": "ADMIN",
+        "description": "Acc\u00e8s complet \u00e0 l'application"
+      },
+      {
+        "nom": "USER",
+        "description": "Acc\u00e8s standard"
+      }
+    ]
+  }
+}

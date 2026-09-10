@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPathPattern": "/api/comptes/v1/usagers/[0-9]+",
+    "headers": {
+      "Authorization": {
+        "matches": "^[Bb]earer\\s.+$"
+      }
+    }
+  },
+  "response": {
+    "status": 204
+  }
+}

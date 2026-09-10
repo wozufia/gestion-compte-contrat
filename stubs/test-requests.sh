@@ -83,8 +83,15 @@ build_body_from_request() {
   local request_json="$1"
   jq -c '
     (.bodyPatterns // [])
-    | map(select(.matchesJsonPath? and (.matchesJsonPath | test("@\\."))))
-    | map(.matchesJsonPath | capture("@\\.(?<key>[^\\)]+)") | .key)
+    | map(select(.matchesJsonPath? and (.matchesJsonPath | test("@\\.|\\$\\."))))
+    | map(
+        .matchesJsonPath
+        | if test("@\\.") then
+            capture("@\\.(?<key>[^\\)]+)") | .key
+          else
+            capture("\\$\\.(?<key>.+)") | .key
+          end
+      )
     | reduce .[] as $key ({}; . + {($key): "value"})
   ' "$request_json"
 }
