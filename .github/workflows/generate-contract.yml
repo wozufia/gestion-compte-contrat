@@ -10,33 +10,46 @@ permissions:
   contents: read
 
 jobs:
+  test-stubs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Start WireMock
+        run: docker compose -f docker-compose.wiremock.yml up -d
+
+      - name: Wait for WireMock
+        run: |
+          for i in {1..30}; do
+            curl -fsS http://localhost:8081/__admin/mappings && exit 0
+            sleep 2
+          done
+          exit 1
+
+      - name: Run stub tests
+        run: bash stubs/test-requests.sh
+        env:
+          BASE_HOST: http://localhost:8081
+
+      - name: Stop WireMock
+        if: always()
+        run: docker compose -f docker-compose.wiremock.yml down
+
   build-contract-jar:
+    needs: test-stubs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Build contract JAR
-        run: |
-          mkdir -p build
-          cp gestion-compte-contrat.yml build/gestion-compte-contrat.yml
-          cat > build/MANIFEST.MF <<'EOF'
-          Manifest-Version: 1.0
-          Created-By: GitHub Actions
-          EOF
-          jar cfm gestion-contratv1.jar build/MANIFEST.MF -C build gestion-compte-contrat.yml
+        run: ./gradlew jar
 
       - name: Upload contract JAR
         uses: actions/upload-artifact@v5.0.0
         with:
           name: gestion-contratv1
-          path: gestion-contratv1.jar
+          path: build/libs/*.jar
           if-no-files-found: error
           retention-days: 90
-
-  contract-artifact:
-    needs: build-contract-jar
-    runs-on: ubuntu-latest
-    steps:
-      - name: Contract artifact generated
-        run: echo "Contract JAR built and uploaded in build-contract-jar job."
