@@ -8,6 +8,23 @@ permissions:
   contents: read
 
 jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build contract JAR
+        run: ./gradlew jar
+
+      - name: Upload PR artifact
+        uses: actions/upload-artifact@v5.0.0
+        with:
+          name: gestion-contratv1-pr
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
+
   test-stubs:
     runs-on: ubuntu-latest
     steps:
@@ -30,17 +47,6 @@ jobs:
         run: bash stubs/test-requests.sh
         env:
           BASE_HOST: http://localhost:8081
-
-      - name: Build contract JAR
-        run: ./gradlew jar
-
-      - name: Upload PR artifact
-        uses: actions/upload-artifact@v5.0.0
-        with:
-          name: gestion-contratv1-pr
-          path: build/libs/*.jar
-          if-no-files-found: error
-          retention-days: 30
 
       - name: Stop WireMock
         if: always()

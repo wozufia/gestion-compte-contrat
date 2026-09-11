@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.awa.centrale'
-version = '1.0.0'
+version = '1.0.1'
 
 def contractFile = layout.projectDirectory.file('gestion-compte-contrat.yml')
 def stubsDir = layout.projectDirectory.dir('stubs')
