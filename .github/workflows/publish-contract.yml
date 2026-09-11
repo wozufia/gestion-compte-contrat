@@ -1,0 +1,40 @@
+name: Publish Contract
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build JAR
+        run: ./gradlew jar
+
+      - name: Upload merged artifact
+        uses: actions/upload-artifact@v5.0.0
+        with:
+          name: gestion-contratv1
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publish -x checkContract
